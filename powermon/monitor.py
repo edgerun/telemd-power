@@ -98,7 +98,7 @@ class ArduinoPowerMeter:
 
 class PowerMonitor:
 
-    def __init__(self, redis_client, interval=None, aggregate=1) -> None:
+    def __init__(self, redis_client, interval=None, aggregate=1, sensor_names=None) -> None:
         super().__init__()
         self.redis_client = redis_client
         self.interval = interval or 1.
@@ -106,6 +106,7 @@ class PowerMonitor:
 
         self.aggregate = aggregate
         self.request_pattern = 'W' * self.aggregate
+        self.sensor_names = sensor_names
 
     def run(self):
         rds = self.redis_client
@@ -115,7 +116,7 @@ class PowerMonitor:
         logger.info('starting to listen in power meter at interval %.2f s', self.interval)
         while not self._cancelled:  # connect / IOError retry loop
             try:
-                with ArduinoPowerMeter(request_pattern=self.request_pattern) as power_meter:
+                with ArduinoPowerMeter(mapping=self.sensor_names, request_pattern=self.request_pattern) as power_meter:
                     if retrying:
                         logger.info("Arduino is now connected")
                         retrying = False

@@ -15,7 +15,7 @@ b_A = 65
 b_V = 86
 b_W = 87
 
-ArduinoPowerMeter._default_sensor_node_mapping = {0: 'a', 1: 'b', 2: 'c', 3: 'd'}
+sensor_names = {0: 'a', 1: 'b', 2: 'c', 3: 'd'}
 
 
 class RedisResource:
@@ -69,9 +69,7 @@ class ArduinoPowerMeterTest(unittest.TestCase):
     def test_integration(self, serial):
         serial.return_value = MockedArduinoProgram()
 
-        mapping = {0: 'a', 1: 'b', 2: 'c', 3: 'd'}
-
-        with ArduinoPowerMeter(mapping=mapping, request_pattern='AVW', arduino_path='fake') as power_meter:
+        with ArduinoPowerMeter(mapping=sensor_names, request_pattern='AVW', arduino_path='fake') as power_meter:
             error = None
             values = None
             try:
@@ -158,7 +156,7 @@ class PowerMonitorTest(unittest.TestCase):
         pubsub = self.redis.rds.pubsub()
         pubsub.psubscribe('telem/*')
 
-        power_monitor = PowerMonitor(self.redis.rds, interval=0.1, aggregate=4)
+        power_monitor = PowerMonitor(self.redis.rds, interval=0.1, aggregate=4, sensor_names=sensor_names)
         thread = threading.Thread(target=power_monitor.run)
         thread.start()
         then = time.time()
