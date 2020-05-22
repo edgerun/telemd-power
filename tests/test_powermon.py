@@ -9,7 +9,7 @@ from unittest.mock import patch
 
 import redislite
 
-from powermon.monitor import ArduinoPowerMeter, PowerMonitor
+from powermon.powermon import ArduinoPowerMeter, PowerMonitor
 
 b_A = 65
 b_V = 86
@@ -102,7 +102,7 @@ class PowerMonitorTest(unittest.TestCase):
     def tearDown(self) -> None:
         self.redis.rds.flushall()
 
-    @patch('powermon.monitor._find_arduino_device_address')
+    @patch('powermon.powermon._find_arduino_device_address')
     @patch('serial.Serial')
     def test_sends_telemetry(self, serial, mocked_device_addresses):
         mocked_device_addresses.return_value = 'fake_arduino'
@@ -111,7 +111,7 @@ class PowerMonitorTest(unittest.TestCase):
         pubsub = self.redis.rds.pubsub()
         pubsub.psubscribe('telem/*')
 
-        power_monitor = PowerMonitor(self.redis.rds, interval=0.1)
+        power_monitor = PowerMonitor(self.redis.rds, interval=0.1, sensor_names=sensor_names)
         thread = threading.Thread(target=power_monitor.run)
         thread.start()
         then = time.time()
@@ -147,7 +147,7 @@ class PowerMonitorTest(unittest.TestCase):
         self.assertEqual('43.3', v3)
         self.assertEqual('44.4', v4)
 
-    @patch('powermon.monitor._find_arduino_device_address')
+    @patch('powermon.powermon._find_arduino_device_address')
     @patch('serial.Serial')
     def test_aggregate_sends_telemetry(self, serial, mocked_device_addresses):
         mocked_device_addresses.return_value = 'fake_arduino'

@@ -31,7 +31,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     entry_points={
-        "console_scripts": ['powermon = powermon.cli:main']
+        "console_scripts": ['powermond = powermon.telemd:main']
     },
 
 )

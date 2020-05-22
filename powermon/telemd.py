@@ -5,7 +5,7 @@ import signal
 
 import redis
 
-from powermon.monitor import PowerMonitor
+from powermon.powermon import PowerMonitor
 
 logger = logging.getLogger(__name__)
 
