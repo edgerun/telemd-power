@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 _arduino_vids = {
     int('0x2341', 16),
     int('0x2a03', 16),
-    int('0x1A35', 16)  # some arduino nano
+    int('0x1a86', 16)  # some arduino nano
 }
 
 
