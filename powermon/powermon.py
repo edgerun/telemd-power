@@ -6,7 +6,11 @@ import serial.tools.list_ports
 
 logger = logging.getLogger(__name__)
 
-_arduino_vids = {int('0x2341', 16), int('0x2a03', 16)}
+_arduino_vids = {
+    int('0x2341', 16),
+    int('0x2a03', 16),
+    int('0x1A35', 16)  # some arduino nano
+}
 
 
 def _find_arduino_device_address():
