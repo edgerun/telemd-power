@@ -13,7 +13,7 @@ with open("requirements.txt", "r") as fh:
 
 setuptools.setup(
     name="edgerun-telemd-power",
-    version="0.1.0.dev1",
+    version="0.1.0",
     author="Thomas Rausch",
     author_email="t.rausch@dsg.tuwien.ac.at",
     description="A monitor for reporting power sensor readings into telemd",
