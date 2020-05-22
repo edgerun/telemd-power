@@ -12,6 +12,17 @@ Make sure your arduino is connected and is running the ina219-powermeter program
 
 It supports various arguments that can also be set via the environment variables. Just append `--help`
 
+### Running in Docker
+
+Suppose your Arduino is connected to `/dev/ttyUSB0`,
+and the Redis server is serving on `192.168.1.2`,
+then you can run:
+
+    docker run --rm -it \
+      --device=/dev/ttyUSB0 \
+      --env telemd_redis_host=192.168.1.2 \
+      edgerun/telemd-power
+
 Configuration
 -------------
 
