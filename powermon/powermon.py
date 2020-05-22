@@ -66,12 +66,19 @@ class ArduinoPowerMeter:
         return self._command_map.get(command, command)
 
     def read(self):
+        logger.debug('Sending requests pattern %s to arduino', self.request_pattern)
         # the arduino program sends data back on request (it listens for an arbitrary sequence of 'W','A' or 'V'
         # and then sends data in one line)
         self.connection.write(str.encode(self.request_pattern))
         values = {}
+
+        logger.debug("reading lines from arduino ...")
         for command in self.request_pattern:
             returned_readings = self.connection.readline()
+
+            if logger.isEnabledFor(logging.DEBUG):
+                logger.debug("line returned for command %s was %s", command, returned_readings.decode('ASCII'))
+
             parsed_values = self._parse_values(returned_readings)
             name = self._name_for_command(command)
 
