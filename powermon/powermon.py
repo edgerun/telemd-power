@@ -55,9 +55,9 @@ class ArduinoPowerMeter:
         self.address = self.arduino_path or _find_arduino_device_address()
 
         logger.debug('connecting to arduino %s with rate %d', self.address, self.baudrate)
-        self.connection = serial.Serial(self.address, self.baudrate, timeout=1)
+        self.connection = serial.Serial(self.address, self.baudrate, timeout=5)
 
-        # program may return 'ready' first, so checking for this but it will timeout after 1 second
+        # program may return 'ready' first, so checking for this but it will timeout after 5 seconds
         logger.debug('connected to arduino, waiting for ready message...')
         line = self.connection.readline().decode('ASCII').strip()
         if line == 'ready':
