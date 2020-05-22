@@ -1,17 +1,42 @@
+import os
+import shutil
+import tempfile
 import threading
 import time
 import unittest
 from queue import Queue
 from unittest.mock import patch
 
-from symmetry.telemetry.power import ArduinoPowerMeter, PowerMonitor
-from tests.testutils import RedisResource
+import redislite
+
+from powermon.monitor import ArduinoPowerMeter, PowerMonitor
 
 b_A = 65
 b_V = 86
 b_W = 87
 
 ArduinoPowerMeter._default_sensor_node_mapping = {0: 'a', 1: 'b', 2: 'c', 3: 'd'}
+
+
+class RedisResource:
+    tmpfile: str
+    rds: redislite.Redis
+
+    def setUp(self):
+        self.tmpfile = tempfile.mktemp('.db', 'powermon_test_')
+        self.rds = redislite.Redis(self.tmpfile, decode_responses=True)
+        self.rds.get('dummykey')  # run a first command to initiate
+
+    def tearDown(self):
+        self.rds.shutdown()
+
+        os.remove(self.tmpfile)
+        os.remove(self.rds.redis_configuration_filename)
+        os.remove(self.rds.settingregistryfile)
+        shutil.rmtree(self.rds.redis_dir)
+
+        self.rds = None
+        self.tmpfile = None
 
 
 class MockedArduinoProgram:
@@ -79,7 +104,7 @@ class PowerMonitorTest(unittest.TestCase):
     def tearDown(self) -> None:
         self.redis.rds.flushall()
 
-    @patch('symmetry.telemetry.power._find_arduino_device_address')
+    @patch('powermon.monitor._find_arduino_device_address')
     @patch('serial.Serial')
     def test_sends_telemetry(self, serial, mocked_device_addresses):
         mocked_device_addresses.return_value = 'fake_arduino'
@@ -124,7 +149,7 @@ class PowerMonitorTest(unittest.TestCase):
         self.assertEqual('43.3', v3)
         self.assertEqual('44.4', v4)
 
-    @patch('symmetry.telemetry.power._find_arduino_device_address')
+    @patch('powermon.monitor._find_arduino_device_address')
     @patch('serial.Serial')
     def test_aggregate_sends_telemetry(self, serial, mocked_device_addresses):
         mocked_device_addresses.return_value = 'fake_arduino'
