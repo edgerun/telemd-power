@@ -1,0 +1,2 @@
+pyserial==3.4
+redis>=3.2.1
