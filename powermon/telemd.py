@@ -48,7 +48,7 @@ def main():
     def terminate(signum, frame):
         logger.info('signal received %s', signum)
         powmon.cancel()
-        raise NotImplementedError
+        raise KeyboardInterrupt
 
     signal.signal(signal.SIGINT, terminate)
     signal.signal(signal.SIGTERM, terminate)
