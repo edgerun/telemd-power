@@ -52,6 +52,10 @@ class ArduinoPowerMeter:
         self.connection = None
 
     def connect(self):
+        if self.connection:
+            logger.debug("connection already established on %s", self.address)
+            return
+
         self.address = self.arduino_path or _find_arduino_device_address()
 
         logger.debug('connecting to arduino %s with rate %d', self.address, self.baudrate)
@@ -67,7 +71,9 @@ class ArduinoPowerMeter:
 
     def disconnect(self):
         if self.connection:
+            logger.debug("closing serial connection %s", self.address)
             self.connection.close()
+            self.connection = None
 
     def _parse_values(self, line):
         return [float(v) for v in line.decode('ASCII').strip().split(' ')]

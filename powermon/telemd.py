@@ -42,6 +42,7 @@ def main():
                             default=os.getenv('powermon_sensor_%d' % i, 'sensor%i' % i))
     args = parser.parse_args()
     rds = get_redis()
+    logger.info("connected to redis %s", rds)
     sensor_names = read_sensor_names(args)
     powmon = PowerMonitor(rds, interval=args.interval, aggregate=args.aggregate, sensor_names=sensor_names)
 
