@@ -23,6 +23,10 @@ then you can run:
       --env telemd_redis_host=192.168.1.2 \
       edgerun/telemd-power
 
+It may be necessary to add the docker user to the dialout group:
+
+    sudo usermod -a -G dialout pirate
+
 Configuration
 -------------
 
